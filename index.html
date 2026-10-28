@@ -6,17 +6,18 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&display=swap">
 <style>
+/* Forward Serif (Måns Grebäck, personal use): uses the installed font, or fonts/ForwardSerif.* next to index.html */
+@font-face{font-family:"Forward Serif";src:local("Forward Serif"),local("Forward Serif Regular"),local("ForwardSerif-Regular"),local("ForwardSerif"),url("fonts/ForwardSerif.woff2") format("woff2"),url("fonts/ForwardSerif.otf") format("opentype"),url("fonts/ForwardSerif.ttf") format("truetype");font-weight:400 700;font-display:swap}
 /* Layout: one horizontal track of full-height poster panels, one watercolour glass per panel, hover for its story */
 :root{
   --paper:#F3EDE3;
   --sky:#BCD0E8;
-  --blush:#F3D7D8;
   --card:#FBF7F0;
   --ink:#17130F;
   --ink-soft:#5A5047;
   --accent:#D63E1C;
   --sans:"Helvetica Neue",Helvetica,Arial,sans-serif;
-  --hand:"Caveat","Bradley Hand","Segoe Print",cursive;
+  --hand:"Forward Serif","Caveat","Bradley Hand","Segoe Print",cursive;
   --top:calc(64px + env(safe-area-inset-top,0px));
   --bottom:calc(84px + env(safe-area-inset-bottom,0px));
   color-scheme:light;
@@ -49,7 +50,7 @@ button{font:inherit;color:inherit}
 .track::-webkit-scrollbar{display:none}
 .panel{flex:0 0 76vw;height:100%;position:relative;display:flex;flex-direction:column;justify-content:center;
   padding-block:var(--top) var(--bottom);padding-left:max(16px,3vw);padding-right:max(16px,3vw);box-sizing:border-box}
-.bg-paper{background:var(--paper)} .bg-sky{background:var(--sky)} .bg-blush{background:var(--blush)}
+.bg-paper{background:var(--paper)} .bg-sky{background:var(--sky)}
 
 /* title */
 .intro{flex-basis:64vw;gap:28px}
@@ -91,11 +92,20 @@ button{font:inherit;color:inherit}
 .tap-hint{display:none}
 
 /* closing */
-.outro{flex-basis:70vw;gap:26px}
+.outro{flex-basis:76vw;gap:24px}
 .outro h2{margin:0;font-size:clamp(46px,6vw,88px);letter-spacing:-.04em;line-height:.92}
-.swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px 18px;max-width:760px;margin:0;padding:0;list-style:none}
-.swatches li{display:flex;align-items:center;gap:10px;font-family:var(--hand);font-size:26px}
-.swatches svg{width:46px;height:40px;flex:none}
+.layer-grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;width:min(100%,960px)}
+.box{position:relative;height:clamp(110px,21vh,210px);overflow:hidden;box-sizing:border-box;border:2px solid var(--ink);border-radius:14px 225px 14px 255px/255px 14px 225px 14px;background:var(--card);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;padding:12px}
+.flow{position:absolute;inset:0;width:100%;height:100%}
+.pourg{transition:transform 1.9s cubic-bezier(.45,.05,.3,1);transition-delay:var(--d,0s)}
+.layer-grid.wait .pourg{transform:translateY(-122px)}
+.box.dk .nm,.box.dk .in{transition:color .6s ease;transition-delay:calc(var(--d,0s) + .9s)}
+.layer-grid.wait .box.dk .nm{color:var(--ink);transition:none}
+.layer-grid.wait .box.dk .in{color:var(--ink-soft);transition:none}
+.nm{position:relative;font-family:var(--hand);font-size:clamp(24px,2.4vw,34px);line-height:1;color:var(--ink)}
+.in{position:relative;font-size:11px;line-height:1.4;letter-spacing:.04em;color:var(--ink-soft);max-width:24ch}
+.box.dk .nm,.box.dk .in{color:#F7F0E6}
 .credits{max-width:62ch;font-size:12px;line-height:1.5;color:var(--ink-soft);margin:0}
 .back{font-family:var(--hand);font-size:28px;background:none;border:0;padding:0;cursor:pointer;width:max-content;color:var(--accent)}
 
@@ -116,6 +126,8 @@ button{font:inherit;color:inherit}
   .panel{flex-basis:88vw}
   .card{width:min(340px,46%)}
   .tick span{display:none}
+  .layer-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .box{height:clamp(96px,15vh,150px)}
 }
 @media (max-width:767px){
   :root{--top:calc(58px + env(safe-area-inset-top,0px))}
@@ -150,10 +162,16 @@ button{font:inherit;color:inherit}
       <feBlend in="m1" in2="gg" mode="multiply" result="m2"/>
       <feComposite in="m2" in2="b" operator="in"/>
     </filter>
-    <filter id="wob" x="-5%" y="-5%" width="110%" height="110%">
+    <filter id="wob" x="-20%" y="-20%" width="140%" height="140%">
       <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="7" result="n"/>
       <feDisplacementMap in="SourceGraphic" in2="n" scale="4" xChannelSelector="R" yChannelSelector="G" result="d"/>
       <feGaussianBlur in="d" stdDeviation="0.35"/>
+    </filter>
+    <filter id="wcbox" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.05 0.08" numOctaves="3" seed="9" result="blot"/>
+      <feColorMatrix in="blot" type="matrix" values="0.24 0.24 0.24 0 0.6  0.24 0.24 0.24 0 0.6  0.24 0.24 0.24 0 0.6  0 0 0 0 1" result="bg"/>
+      <feBlend in="SourceGraphic" in2="bg" mode="multiply" result="m"/>
+      <feComposite in="m" in2="SourceGraphic" operator="in"/>
     </filter>
     <filter id="soft" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="2.2"/></filter>
     <filter id="shadow" x="-30%" y="-100%" width="160%" height="300%"><feGaussianBlur stdDeviation="7"/></filter>
@@ -199,54 +217,55 @@ button{font:inherit;color:inherit}
 (function(){
 const DRINKS=[
  {id:"espresso",name:"Espresso",cup:"demi",fill:.5,recipe:"Pure coffee",caption:"rich, bold and intense",surface:"crema",note:"golden crema",
-  layers:[["espresso",100]],tag:"Italy · 1884–1948",
+  layers:[["espresso","1/1"]],tag:"Italy · 1884–1948",
   story:"Espresso was born in Turin, where Angelo Moriondo patented a steam-driven coffee machine in 1884. In Milan, Luigi Bezzera and Desiderio Pavoni refined the idea and showed it at the 1906 Milan Fair, making coffee “expressly” for each customer in under a minute. The thick golden crema we expect today only arrived in 1948, when Achille Gaggia’s lever machine pushed water through the grounds at far higher pressure.",
   fact:"no crema before 1948"},
  {id:"ristretto",name:"Ristretto",cup:"demi",fill:.36,recipe:"Short espresso",caption:"syrupy, sweet, concentrated",surface:"crema",note:"thick crema",
-  layers:[["ristretto",100]],tag:"Italy · 20th century",
+  layers:[["ristretto","1/1"]],tag:"Italy · 20th century",
   story:"Ristretto means “restricted” in Italian: the same dose of ground coffee as an espresso, pulled with roughly half the water and stopped early. Because the shot ends before the slower, more bitter compounds dissolve, it tastes sweeter, thicker and more intense. It grew up alongside espresso in Italian bars as a way to push a shot toward sweetness, and today it is the base of many flat whites.",
   fact:"less water, not less coffee"},
  {id:"americano",name:"Americano",cup:"mug",fill:.86,recipe:"Espresso + water",caption:"long, clean and easygoing",surface:"water",
-  layers:[["espresso",33],["water",67]],tag:"Italy · 1940s",
+  layers:[["espresso","1/3"],["water","2/3"]],tag:"Italy · 1940s",
   story:"The story goes that American soldiers stationed in Italy during the Second World War found espresso too strong, so they topped it up with hot water to taste more like the drip coffee back home. Italians called the result caffè americano. Whether or not the legend is exact, the drink travelled the world with the espresso machine. Pour the shot over the water instead and Australians call it a long black.",
   fact:"espresso, stretched"},
  {id:"macchiato",name:"Macchiato",cup:"demi",fill:.7,recipe:"Espresso + milk foam",caption:"espresso with a spot of foam",surface:"dot",note:"the “stain”",
-  layers:[["espresso",75],["foam",25]],tag:"Italy · 20th century",
+  layers:[["espresso","3/4"],["foam","1/4"]],tag:"Italy · 20th century",
   story:"Macchiato means “stained” or “marked”. In busy Italian bars, a spoonful of milk foam on top let the barista tell this cup apart from a plain espresso at a glance. It is still a small, strong drink: a single shot softened by a little foam, quite different from the large, sweet drinks that coffee chains sell under the same name.",
   fact:"a mark of foam"},
  {id:"cortado",name:"Cortado",cup:"picS",fill:.84,recipe:"Espresso + milk",caption:"cut with warm milk",surface:"heart",note:"latte art",
-  layers:[["espresso",50],["milk",50]],tag:"Spain",
+  layers:[["espresso","1/2"],["milk","1/2"]],tag:"Spain",
   story:"From the Spanish cortar, “to cut”, a cortado is espresso cut with an equal amount of warm milk, steamed with very little foam so it stays smooth. It is an everyday order across Spain, and Cuba’s cortadito adds sugar to the shot. Served in a small glass, it sits between a macchiato and a flat white: enough milk to soften the acidity, not enough to hide the coffee.",
   fact:"half and half, no fuss"},
  {id:"flat-white",name:"Flat White",cup:"pic",fill:.9,recipe:"Espresso + milk + microfoam",caption:"velvety and strong",surface:"tulip",note:"tulip pour",
-  layers:[["espresso",35],["milk",55],["microfoam",10]],tag:"Australia / New Zealand · 1980s",
+  layers:[["espresso","1/3"],["milk","1/2"],["microfoam","1/6"]],tag:"Australia / New Zealand · 1980s",
   story:"Both Australia and New Zealand claim the flat white. Sydney café owner Alan Preston says he put it on his menu in 1985, while Wellington barista Fraser McInnes tells of a cappuccino in 1989 that came out “flat”. Either way, it is espresso under a thin layer of velvety microfoam, stronger than a latte. Australian and New Zealand cafés carried it to London in the 2000s, and from there everywhere.",
   fact:"the great trans-Tasman debate"},
  {id:"cappuccino",name:"Cappuccino",cup:"bowl",fill:.92,recipe:"Espresso + milk + foam",caption:"smooth espresso with silky foam",surface:"cocoa",note:"cocoa dusting",
-  layers:[["espresso",33],["milk",33],["foam",34]],tag:"Italy · 1930s",
+  layers:[["espresso","1/3"],["milk","1/3"],["foam","1/3"]],tag:"Italy · 1930s",
   story:"The cappuccino takes its name from the Capuchin friars, whose brown-hooded robes matched the colour of coffee lightened with milk. Viennese cafés served a “Kapuziner” in the 1700s, but the foamy version we know arrived in Italy with the espresso machine in the early 20th century. Italians still treat it as a breakfast drink, and ordering one after lunch earns a raised eyebrow.",
   fact:"never after 11, if you’re in Rome"},
  {id:"latte",name:"Latte",cup:"picT",fill:.92,recipe:"Espresso + milk + milk foam",caption:"creamy milk with an espresso kick",surface:"rosetta",note:"rosetta",
-  layers:[["espresso",20],["milk",70],["foam",10]],tag:"Italy / USA · 1950s–80s",
+  layers:[["espresso","1/5"],["milk","7/10"],["foam","1/10"]],tag:"Italy / USA · 1950s–80s",
   story:"In Italy, caffellatte is simply coffee with milk, made at home for breakfast; ask a bar for “un latte” and you will get a glass of milk. The espresso-bar latte grew up in America. Lino Meiorin of Caffe Mediterraneum in Berkeley said he popularised it in the 1950s for customers who found cappuccino too strong, and Seattle’s coffee boom of the 1980s took it worldwide.",
   fact:"say “caffè latte” in Italy"},
  {id:"mocha",name:"Mocha",cup:"mug",fill:.9,recipe:"Espresso + hot chocolate + milk + foam",caption:"chocolate meets espresso",surface:"drizzle",note:"chocolate drizzle",
-  layers:[["chocolate",15],["espresso",25],["milk",50],["foam",10]],tag:"Yemen → everywhere",
+  layers:[["chocolate","1/6"],["espresso","1/4"],["milk","1/2"],["foam","1/12"]],tag:"Yemen → everywhere",
   story:"The name comes from Mocha, the Yemeni port that dominated the world coffee trade from the 15th to the 18th century. Its beans were known for deep, sometimes chocolatey notes, and “mocha” came to mean coffee paired with chocolate. Turin had its own version, the bicerin, layering espresso, chocolate and cream since the 1700s. Today’s caffè mocha is a latte with chocolate stirred through.",
   fact:"named after a harbour"},
  {id:"latte-macchiato",name:"Latte Macchiato",cup:"tall",fill:.93,recipe:"Milk + espresso + foam",caption:"stripes in a tall glass",surface:"stain",note:"espresso mark",
-  layers:[["milk",60],["espresso",15],["foam",25]],tag:"Italy",
+  layers:[["milk","1/2"],["espresso","1/6"],["foam","1/3"]],tag:"Italy",
   story:"Flip the macchiato around and you get the latte macchiato, “stained milk”: a tall glass of steamed milk with espresso poured in last. The hot coffee is lighter than the milk but heavier than the foam, so it settles in a band between them and gives the drink its stripes. Italians drink it as a gentle morning coffee, and it is especially popular in Germany and Austria.",
   fact:"the milk gets stained, not the coffee"}
 ];
 const LAYER={
-  espresso:{label:"espresso",color:"#5d3522"},
-  ristretto:{label:"ristretto shot",color:"#46271a"},
+  espresso:{label:"espresso",color:"#5d3522",dark:true},
+  ristretto:{label:"ristretto shot",color:"#46271a",dark:true},
   water:{label:"hot water",color:"#cfe1ee"},
   milk:{label:"steamed milk",color:"#e7d0b0"},
   microfoam:{label:"microfoam",color:"#f2e6d3"},
   foam:{label:"milk foam",color:"#faf4ea"},
-  chocolate:{label:"chocolate",color:"#4a2417"}
+  chocolate:{label:"chocolate",color:"#4a2417",dark:true},
+  crema:{label:"crema",color:"#a7672f",dark:true}
 };
 const VESSELS={
   demi:{wt:250,wb:168,h:230,curve:.35,handle:"cup",base:16,facets:0},
@@ -257,7 +276,7 @@ const VESSELS={
   picT:{wt:250,wb:188,h:370,curve:0,handle:null,base:30,facets:6},
   tall:{wt:196,wb:168,h:410,curve:0,handle:null,base:36,facets:0}
 };
-const BG=["bg-sky","bg-blush","bg-paper"];
+const BG=["bg-sky","bg-paper"];
 const P=.2, CX=440, BASE=548, W=720, H=600;
 const f=n=>Math.round(n*10)/10;
 const pt=p=>f(p[0])+","+f(p[1]);
@@ -286,7 +305,7 @@ function paint(d,idx){
   // liquid
   const Lh=(inB-top)*d.fill, yl=inB-Lh;
   const rxAt=y=>(xri(y)-xli(y))/2, cxAt=y=>(xri(y)+xli(y))/2;
-  let cum=0;const bands=d.layers.map(([type,pct])=>{const yb=inB-Lh*cum/100;cum+=pct;const yt=inB-Lh*cum/100;return{type,pct,yb,yt}});
+  let cum=0;const bands=d.layers.map(([type,fr])=>{const q=fr.split("/").map(Number),val=q[0]/q[1];const yb=inB-Lh*cum;cum+=val;const yt=inB-Lh*Math.min(1,cum);return{type,fr,yb,yt}});
   let liquid="";
   for(let k=bands.length-1;k>=0;k--){
     const b=bands[k],y=b.yt,rx=rxAt(y),c=cxAt(y),ry=rx*P,lo=inB+ryI+60;
@@ -338,7 +357,7 @@ function paint(d,idx){
   [-1,0,1].forEach(s=>{const x0=CX+s*rxT*.34,y0=top-18-(s===0?6:0);steam+='<path d="M'+f(x0)+","+f(y0)+" c 16,-16 -16,-28 0,-44 s 16,-28 0,-44\"/>"});steam+="</g>";
   // labels
   const vb0=top-118,k=Math.min(1.1,Math.max(.6,(BASE+32-vb0)/520)),GAP=40*k;
-  const items=bands.map(b=>{const ym=(b.yb+b.yt)/2,ay=ym+rxAt(ym)*P*.9;return{text:LAYER[b.type].label,pct:b.pct+"%",ax:xli(ym)+16,ay,ly:ay+9*k}});
+  const items=bands.map(b=>{const ym=(b.yb+b.yt)/2,ay=ym+rxAt(ym)*P*.9;return{text:LAYER[b.type].label,pct:b.fr==="1/1"?"all":b.fr,ax:xli(ym)+16,ay,ly:ay+9*k}});
   if(d.note){items.push({text:d.note,pct:"",ax:sx-srx*.38,ay:yl-sry*.15,ly:Math.min(yl-sry-22,items[items.length-1].ly-GAP)})}
   items.sort((a,b)=>a.ly-b.ly);
   for(let it=0;it<40;it++){for(let i=0;i<items.length-1;i++){const g=items[i+1].ly-items[i].ly;if(g<GAP){const p=(GAP-g)/2;items[i].ly-=p;items[i+1].ly+=p}}
@@ -352,7 +371,7 @@ function paint(d,idx){
   labels+="</g>";
   const maxC=Math.max(...items.map(o=>o.text.length+(o.pct?o.pct.length+1:0)));
   const vbY=Math.min(vb0,Math.min(...items.map(o=>o.ly))-40*k),vbX=Math.max(0,lx-maxC*14.5*k-14);
-  const vbR=Math.max(CX+rxT+(v.handle?(v.handle==="mug"?128:104):26),CX+rxB+62),vbH=BASE+34-vbY;
+  const vbR=Math.max(CX+rxT+(v.handle?(v.handle==="mug"?150:126):26),CX+rxB+62),vbH=BASE+34-vbY;
   const revealTop=yl-sry-12, revealBottom=inB+ryI+14;
   const svg='<svg viewBox="'+f(vbX)+" "+f(vbY)+" "+f(vbR-vbX)+" "+f(vbH)+'" style="--k:'+k.toFixed(3)+'" role="img" aria-hidden="true" focusable="false"><defs>'+
     '<clipPath id="in-'+uid+'"><path d="'+inner+'"/></clipPath>'+
@@ -374,7 +393,7 @@ function paint(d,idx){
         '<path d="'+outer+'"/><ellipse cx="'+CX+'" cy="'+f(top)+'" rx="'+f(rxT)+'" ry="'+f(ryT)+'"/></g>'+
       '<ellipse cx="'+CX+'" cy="'+f(top+1)+'" rx="'+f(rxTi)+'" ry="'+f(rxTi*P)+'" fill="none" stroke="#fff" stroke-opacity=".75" stroke-width="2.5"/>'+
     "</g>"+labels+"</svg>";
-  const aria=d.name+": "+d.layers.map(([t,p])=>p+"% "+LAYER[t].label).join(", ")+". Show its history.";
+  const aria=d.name+": "+d.layers.map(([t,p])=>(p==="1/1"?"all":p)+" "+LAYER[t].label).join(", ")+". Show its history.";
   return{svg,aria,revealTop,revealBottom};
 }
 
@@ -384,7 +403,7 @@ const reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const pours=[];
 DRINKS.forEach((d,i)=>{
   const g=paint(d,i),n=String(i+1).padStart(2,"0"),sec=document.createElement("section");
-  sec.className="panel drink "+BG[i%3]+(i===0?" first":"");sec.id=d.id;sec.dataset.id=d.id;sec.setAttribute("aria-labelledby","name-"+d.id);
+  sec.className="panel drink "+BG[i%2]+(i===0?" first":"");sec.id=d.id;sec.dataset.id=d.id;sec.setAttribute("aria-labelledby","name-"+d.id);
   sec.innerHTML='<div class="num">'+n+" / "+DRINKS.length+'</div><div class="stage"><button class="cup" type="button" aria-expanded="false" aria-controls="card-'+d.id+'" aria-label="'+g.aria+'">'+g.svg+'</button>'+
    '<span class="tap-hint" aria-hidden="true">tap the glass</span>'+
    '<aside class="card" id="card-'+d.id+'" aria-label="History of the '+d.name+'"><p class="tag">'+d.tag+'</p><p class="story">'+d.story+'</p><p class="fact">'+d.fact+"</p></aside></div>"+
@@ -392,9 +411,12 @@ DRINKS.forEach((d,i)=>{
   track.appendChild(sec);
   pours.push({sec,rect:sec.querySelector(".rv"),labels:sec.querySelector(".labels"),top:g.revealTop,bottom:g.revealBottom,done:reduce});
 });
-closing.className="panel outro bg-paper";closing.dataset.id="layers";
-closing.innerHTML='<h2>Read the layers</h2><ul class="swatches">'+Object.values(LAYER).map(l=>'<li><svg viewBox="0 0 46 40" aria-hidden="true"><path filter="url(#wc)" fill="'+l.color+'" d="M6 20 C4 9 18 4 26 6 C38 8 43 16 40 26 C37 35 22 37 13 33 C8 31 7 26 6 20 Z"/></svg>'+l.label+"</li>").join("")+
- '</ul><p class="credits">Coffee Guide. Glasses painted in code with SVG watercolour filters. Set in Helvetica and Caveat. Layer shares are typical café ratios and vary by café and country. Origin stories for the americano, flat white and latte are disputed, and the histories here are short summaries.</p><button class="back" type="button" data-go="0">← back to the first sip</button>';
+closing.className="panel outro "+BG[DRINKS.length%2];closing.dataset.id="layers";
+const GRID=["espresso","ristretto","crema","chocolate","water","milk","microfoam","foam"];
+const usedIn=key=>DRINKS.filter(d=>key==="crema"?["crema","dot"].includes(d.surface):d.layers.some(l=>l[0]===key)).map(d=>d.name);
+closing.innerHTML='<h2>Read the layers</h2><ul class="layer-grid" id="layer-grid">'+GRID.map((key,j)=>{const l=LAYER[key],u=usedIn(key);
+  return '<li class="box'+(l.dark?" dk":"")+'" style="--d:'+(j*0.12).toFixed(2)+'s"><svg class="flow" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><g class="pourg"><path filter="url(#wcbox)" fill="'+l.color+'" d="M-6,-130 L106,-130 L106,106 C92,114 80,102 66,110 C52,118 40,104 26,111 C15,116 5,108 -6,112 Z"/></g></svg><span class="nm">'+l.label+'</span><span class="in">'+(u.length?"in "+u.join(", "):"")+"</span></li>"}).join("")+
+ '</ul><p class="credits">Coffee Guide. Glasses painted in code with SVG watercolour filters. Set in Helvetica and Forward Serif. Layer shares are typical caf\u00e9 ratios and vary by caf\u00e9 and country. Origin stories for the americano, flat white and latte are disputed, and the histories here are short summaries.</p><button class="back" type="button" data-go="0">\u2190 back to the first sip</button>';
 track.appendChild(closing);
 
 const panels=[...track.children];
@@ -457,6 +479,8 @@ if(!reduce&&"IntersectionObserver" in window){
   pours.forEach(p=>{p.rect.setAttribute("y",p.bottom);p.labels.style.opacity=0});
   const io=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){const p=pours.find(q=>q.sec===en.target);if(p)pour(p)}}),{root:track,threshold:.35});
   pours.forEach(p=>io.observe(p.sec));
+  const lg=document.getElementById("layer-grid");lg.classList.add("wait");
+  new IntersectionObserver((es,o)=>es.forEach(en=>{if(en.isIntersecting){lg.classList.remove("wait");o.disconnect()}}),{root:track,threshold:.3}).observe(closing);
 }
 
 window.addEventListener("resize",measure);
