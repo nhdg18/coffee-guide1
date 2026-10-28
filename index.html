@@ -7,7 +7,9 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&display=swap">
 <style>
 /* Forward Serif (Måns Grebäck, personal use): uses the installed font, or fonts/ForwardSerif.* next to index.html */
-@font-face{font-family:"Forward Serif";src:local("Forward Serif"),local("Forward Serif Regular"),local("ForwardSerif-Regular"),local("ForwardSerif"),url("fonts/ForwardSerif.woff2") format("woff2"),url("fonts/ForwardSerif.otf") format("opentype"),url("fonts/ForwardSerif.ttf") format("truetype");font-weight:400 700;font-display:swap}
+@font-face{font-family:"Coffee Hand";src:local("Forward Serif"),local("Forward Serif Regular"),local("ForwardSerif-Regular"),local("ForwardSerif"),url("fonts/ForwardSerif.woff2") format("woff2"),url("fonts/ForwardSerif.otf") format("opentype"),url("fonts/ForwardSerif.ttf") format("truetype");font-weight:400 700;font-display:swap;
+  /* letters, space and basic punctuation only: the free version stamps a watermark on digits and symbols, so those fall back */
+  unicode-range:U+0020,U+0027,U+002C-002E,U+0041-005A,U+0061-007A,U+00C0-00FF,U+2019}
 /* Layout: one horizontal track of full-height poster panels, one watercolour glass per panel, hover for its story */
 :root{
   --paper:#F3EDE3;
@@ -17,7 +19,7 @@
   --ink-soft:#5A5047;
   --accent:#D63E1C;
   --sans:"Helvetica Neue",Helvetica,Arial,sans-serif;
-  --hand:"Forward Serif","Caveat","Bradley Hand","Segoe Print",cursive;
+  --hand:"Coffee Hand","Caveat","Bradley Hand","Segoe Print",cursive;
   --top:calc(64px + env(safe-area-inset-top,0px));
   --bottom:calc(84px + env(safe-area-inset-bottom,0px));
   color-scheme:light;
@@ -68,7 +70,7 @@ button{font:inherit;color:inherit}
 .vessel{transform-box:view-box;transform-origin:440px 548px;transition:transform .45s cubic-bezier(.3,1.4,.5,1)}
 .drink.open .vessel{transform:rotate(-3deg)}
 .lbl{font-family:var(--hand);font-size:calc(31px * var(--k,1));font-weight:500;fill:var(--ink)}
-.lbl .pct{font-size:calc(22px * var(--k,1));fill:var(--ink-soft)}
+.lbl .pct{font-family:var(--sans);font-size:calc(19px * var(--k,1));font-weight:500;letter-spacing:.02em;fill:var(--ink-soft)}
 .labels{transition:opacity .5s}
 .steam path{opacity:0;stroke-dasharray:60 140;stroke-dashoffset:60;transition:opacity .3s}
 .drink.open .steam path{opacity:1;animation:steam 2.4s ease-in-out infinite}
